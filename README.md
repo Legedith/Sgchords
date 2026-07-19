@@ -99,7 +99,7 @@ The repository contains a reproducible benchmark for three openly usable folk re
 uv run --frozen python scripts/benchmark_public_domain.py --output benchmark-results
 ```
 
-The benchmark covers a guitar-and-vocal recording with a published chord progression, an instrumental hymn arrangement, and a modal folk-song stress test. See `benchmarks/README.md` and the generated `benchmark-results/results.md` for interpretation.
+The benchmark covers a guitar-and-vocal recording with a published chord progression, an instrumental hymn arrangement, and a modal folk-song stress test. See the [benchmark design](benchmarks/README.md) and [latest checked results](benchmarks/results.md).
 
 ## Configuration
 
