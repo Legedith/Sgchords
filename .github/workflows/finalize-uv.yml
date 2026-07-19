@@ -5,7 +5,7 @@ on:
     types: [opened, reopened, synchronize]
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
   group: finalize-uv-migration
@@ -29,7 +29,7 @@ jobs:
           version: "0.11.29"
           python-version: "3.12"
           enable-cache: true
-      - name: Apply final source and CI fixes
+      - name: Apply final source fixes
         run: |
           python scripts/apply_final_fixes.py
           python - <<'PY'
@@ -74,42 +74,12 @@ jobs:
               encoding="utf-8",
           )
           PY
-          rm -f scripts/apply_final_fixes.py
-          rm -f scripts/__init__.py
-          rm -f .github/workflows/finalize-uv.yml
-          rm -f .github/workflows/commit-uv-lock.yml
       - name: Validate locked project
-        shell: bash
         run: |
-          set +e
-          uv sync --locked 2>&1 | tee final-validation.log
-          sync_status=${PIPESTATUS[0]}
-          if [ "$sync_status" -eq 0 ]; then
-            uv run --frozen ruff check . 2>&1 | tee -a final-validation.log
-            lint_status=${PIPESTATUS[0]}
-          else
-            lint_status=0
-          fi
-          if [ "$sync_status" -eq 0 ] && [ "$lint_status" -eq 0 ]; then
-            uv run --frozen pytest 2>&1 | tee -a final-validation.log
-            test_status=${PIPESTATUS[0]}
-          else
-            test_status=0
-          fi
-          if [ "$sync_status" -eq 0 ] && [ "$lint_status" -eq 0 ] && [ "$test_status" -eq 0 ]; then
-            uv build 2>&1 | tee -a final-validation.log
-            build_status=${PIPESTATUS[0]}
-          else
-            build_status=0
-          fi
-          exit $((sync_status || lint_status || test_status || build_status))
-      - name: Upload validation diagnostics
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: final-validation-log
-          path: final-validation.log
-          if-no-files-found: error
+          uv sync --locked
+          uv run --frozen ruff check .
+          uv run --frozen pytest
+          uv build
       - name: Run real-song benchmark
         run: uv run --frozen python scripts/benchmark_public_domain.py --output benchmark-results
       - name: Store checked benchmark results
@@ -118,17 +88,14 @@ jobs:
           cp benchmark-results/results.md benchmarks/results.md
           cp benchmark-results/results.json benchmarks/results.json
           cp benchmark-results/*-timeline.csv benchmarks/timelines/
-      - name: Upload finalized source and results
-        uses: actions/upload-artifact@v4
-        with:
-          name: finalized-uv-source
-          path: |
-            README.md
-            .github/workflows/ci.yml
-            src/sgchords/analyzer.py
-            tests/test_chords.py
-            tests/test_benchmark.py
-            benchmarks/results.md
-            benchmarks/results.json
-            benchmarks/timelines/*.csv
-          if-no-files-found: error
+      - name: Commit validated source and benchmark results
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add README.md
+          git add src/sgchords/analyzer.py
+          git add tests/test_chords.py tests/test_benchmark.py
+          git add benchmarks/results.md benchmarks/results.json benchmarks/timelines/*.csv
+          git commit -m "Finalize uv song benchmarks"
+          git push origin "HEAD:${{ github.head_ref }}"
