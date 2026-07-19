@@ -26,16 +26,7 @@ jobs:
           version: "0.11.29"
           python-version: ${{ matrix.python-version }}
           enable-cache: true
-      - name: Resolve lockfile
-        run: uv lock
-      - name: Save generated lockfile
-        if: matrix.python-version == '3.12'
-        uses: actions/upload-artifact@v4
-        with:
-          name: uv-lock
-          path: uv.lock
-          if-no-files-found: error
-      - name: Sync from lockfile
+      - name: Sync locked environment
         run: uv sync --locked
       - name: Lint
         run: uv run --frozen ruff check .
@@ -56,8 +47,8 @@ jobs:
           version: "0.11.29"
           python-version: "3.12"
           enable-cache: true
-      - name: Resolve and sync
-        run: uv lock && uv sync --locked
+      - name: Sync locked environment
+        run: uv sync --locked
       - name: Analyze public-domain songs
         run: uv run --frozen python scripts/benchmark_public_domain.py --output benchmark-results
       - name: Upload benchmark results
