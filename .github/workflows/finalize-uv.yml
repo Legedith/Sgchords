@@ -74,6 +74,9 @@ jobs:
               encoding="utf-8",
           )
           PY
+          rm -f scripts/apply_final_fixes.py scripts/__init__.py
+          rm -f .github/workflows/finalize-uv.yml
+          rm -f .github/workflows/commit-uv-lock.yml
       - name: Validate locked project
         run: |
           uv sync --locked
