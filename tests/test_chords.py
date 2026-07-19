@@ -2,7 +2,10 @@ from __future__ import annotations
 
 import numpy as np
 
-from sgchords.analyzer import classify_chroma_segments
+from sgchords.analyzer import (
+    _diatonic_duration_ratio,
+    classify_chroma_segments,
+)
 from sgchords.chords import (
     estimate_key,
     key_prefers_flats,
@@ -73,3 +76,42 @@ def test_capo_finds_easy_shapes() -> None:
     assert capo == 2
     assert shapes == ["A", "D", "E"]
     assert ease > 0.5
+
+
+
+def test_classifier_uses_flat_spelling_for_g_minor() -> None:
+    vectors = np.stack(
+        [
+            chord_vector(3, (0, 4, 7)),
+            chord_vector(8, (0, 4, 7)),
+            chord_vector(10, (0, 4, 7)),
+        ]
+    )
+    labels, _, _ = classify_chroma_segments(
+        vectors,
+        np.ones(3),
+        detail="simple",
+        smoothing=0.2,
+        key_root=7,
+        key_mode="minor",
+        key_confidence=1.0,
+    )
+    assert labels == ["Eb", "Ab", "Bb"]
+
+
+def test_diatonic_ratio_detects_mixed_key_blocks() -> None:
+    segments = [
+        ChordSegment(0, 1, "Eb", 0.9),
+        ChordSegment(1, 2, "Bb", 0.9),
+        ChordSegment(2, 3, "Cm", 0.9),
+        ChordSegment(3, 4, "E", 0.9),
+        ChordSegment(4, 5, "A", 0.9),
+        ChordSegment(5, 6, "B", 0.9),
+    ]
+    ratio = _diatonic_duration_ratio(
+        segments,
+        detail="simple",
+        key_root=7,
+        key_mode="minor",
+    )
+    assert ratio == 0.5

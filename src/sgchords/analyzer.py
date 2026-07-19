@@ -16,6 +16,8 @@ from .chords import (
     chord_vocabulary,
     estimate_key,
     is_diatonic,
+    key_name,
+    key_prefers_flats,
     transpose_chord,
 )
 from .models import ChordSegment
@@ -233,7 +235,7 @@ def classify_chroma_segments(
     for time_index in range(emissions.shape[0] - 1, 0, -1):
         states[time_index - 1] = backpointers[time_index, states[time_index]]
 
-    prefer_flats = key_root in {1, 3, 5, 8, 10}
+    prefer_flats = key_prefers_flats(key_name(key_root, key_mode))
     labels: list[str] = []
     confidences: list[float] = []
     for segment_index, state in enumerate(states):
@@ -355,6 +357,33 @@ def _merge_segments(segments: Sequence[ChordSegment]) -> list[ChordSegment]:
         else:
             merged.append(segment)
     return merged
+
+
+def _diatonic_duration_ratio(
+    segments: Sequence[ChordSegment],
+    *,
+    detail: str,
+    key_root: int,
+    key_mode: str,
+) -> float | None:
+    specs = chord_vocabulary(detail)
+    prefer_flats = key_prefers_flats(key_name(key_root, key_mode))
+    by_label = {
+        transpose_chord(spec.label, 0, prefer_flats=prefer_flats): spec
+        for spec in specs
+    }
+    total_duration = 0.0
+    diatonic_duration = 0.0
+    for segment in segments:
+        if segment.chord == "N" or segment.duration <= 0:
+            continue
+        total_duration += segment.duration
+        spec = by_label.get(segment.chord)
+        if spec is not None and is_diatonic(spec, key_root, key_mode):
+            diatonic_duration += segment.duration
+    if total_duration <= 0:
+        return None
+    return diatonic_duration / total_duration
 
 
 def analyze_audio(
@@ -496,6 +525,12 @@ def analyze_audio(
         else 0.0
     )
     mean_tonality = float(np.mean(tonalities)) if tonalities else 0.0
+    diatonic_ratio = _diatonic_duration_ratio(
+        chord_segments,
+        detail=detail,
+        key_root=key_root,
+        key_mode=key_mode,
+    )
     if not chord_segments:
         warnings.append(
             "No stable chord sequence was found. Try a cleaner recording or manual edits."
@@ -511,6 +546,12 @@ def analyze_audio(
         warnings.append(
             f"The recording appears about {abs(tuning_cents):.0f} cents {direction} of A=440. "
             "Retune the instrument or adjust playback pitch for closer matching."
+        )
+    if diatonic_ratio is not None and diatonic_ratio < 0.70:
+        warnings.append(
+            f"Only about {diatonic_ratio:.0%} of detected chord duration fits one {key} "
+            "harmony. The song may modulate, be modal, or use borrowed chords; treat the "
+            "global key label cautiously."
         )
     if key_confidence < 0.18:
         warnings.append(

@@ -22,46 +22,41 @@ The built-in engine runs locally and does not require a paid API or a large mode
 
 ## Requirements
 
-- Python 3.10 or newer
+- `uv` 0.11.29
 - FFmpeg and FFprobe on `PATH`
-- For reliable YouTube access, a current `yt-dlp` installation and a supported JavaScript runtime such as Node.js or Deno
+- For reliable YouTube access, a supported JavaScript runtime such as Node.js or Deno
+
+Install `uv` with the official standalone installer:
+
+```bash
+# Linux and macOS
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# Windows PowerShell
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+```
 
 Only download or process recordings you are allowed to use. Some YouTube videos require authentication, cookies, or regional access and will not be available to the tool.
 
-## Install and run the web app
+## Install and run the web app with uv
 
 ```bash
 git clone https://github.com/Legedith/Sgchords.git
 cd Sgchords
-python -m venv .venv
+uv sync --locked
+uv run --frozen sgchords-web
 ```
 
-Activate the environment:
-
-```bash
-# Linux/macOS
-source .venv/bin/activate
-
-# Windows PowerShell
-.venv\Scripts\Activate.ps1
-```
-
-Install and launch:
-
-```bash
-python -m pip install --upgrade pip
-python -m pip install -e .
-sgchords-web
-```
+`uv sync` creates and manages `.venv` automatically. No manual virtual-environment activation or `pip install` step is needed.
 
 Open `http://127.0.0.1:7860`.
 
 ## Command line
 
 ```bash
-sgchords "https://www.youtube.com/watch?v=VIDEO_ID"
-sgchords ./recording.m4a --instrument ukulele
-sgchords ./song.mp3 --detail detailed --output-dir ./my-chords
+uv run --frozen sgchords "https://www.youtube.com/watch?v=VIDEO_ID"
+uv run --frozen sgchords ./recording.m4a --instrument ukulele
+uv run --frozen sgchords ./song.mp3 --detail detailed --output-dir ./my-chords
 ```
 
 Useful options:
@@ -76,6 +71,8 @@ Useful options:
 Keep `--transpose 0` when playing with the original recording. A capo suggestion changes the shapes while preserving the sounding key; ordinary transposition changes the concert key.
 
 ## Docker
+
+The image also installs and runs the project with the committed uv lockfile:
 
 ```bash
 docker build -t sgchords .
@@ -94,6 +91,16 @@ Each analysis can export:
 - `*.cho`: ChordPro document
 - `*-guitar-shapes.txt` or `*-ukulele-shapes.txt`: common voicings
 
+## Public-domain song benchmark
+
+The repository contains a reproducible benchmark for three openly usable folk recordings. It downloads the recordings temporarily, analyzes them, and writes Markdown, JSON, and CSV results without committing the audio:
+
+```bash
+uv run --frozen python scripts/benchmark_public_domain.py --output benchmark-results
+```
+
+The benchmark covers a guitar-and-vocal recording with a published chord progression, an instrumental hymn arrangement, and a modal folk-song stress test. See the [benchmark design](benchmarks/README.md) and [latest checked results](benchmarks/results.md).
+
 ## Configuration
 
 Environment variables:
@@ -107,12 +114,20 @@ GRADIO_SERVER_NAME=127.0.0.1
 GRADIO_SERVER_PORT=7860
 ```
 
-## Development
+## Development with uv
 
 ```bash
-python -m pip install -e ".[dev]"
-ruff check .
-pytest
+uv sync --locked
+uv run --frozen ruff check .
+uv run --frozen pytest
+uv build
+```
+
+When dependencies intentionally change:
+
+```bash
+uv lock
+uv sync --locked
 ```
 
 The tests include deterministic chroma classification, synthetic audio analysis, FFmpeg normalization, exports, and a Gradio UI smoke test.

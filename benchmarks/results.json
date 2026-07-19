@@ -1,0 +1,340 @@
+[
+  {
+    "song": {
+      "slug": "hotaru-no-hikari",
+      "title": "Hotaru no Hikari (Auld Lang Syne in Japan)",
+      "file_url": "https://upload.wikimedia.org/wikipedia/commons/f/f4/Hotaru_no_Hikari%28Auld_lang_syne_in_Japan%29.ogg",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Hotaru_no_Hikari(Auld_lang_syne_in_Japan).ogg",
+      "license_note": "Public-domain dedication by the performer.",
+      "arrangement_note": "Guitar and vocal; the source publishes a C/G/Am/F progression.",
+      "expected_key": "C major",
+      "expected_chords": [
+        "C",
+        "G",
+        "Am",
+        "F"
+      ]
+    },
+    "duration_seconds": 60.3,
+    "analysis_seconds": 4.497,
+    "tempo_bpm": 69.84,
+    "key": "D major",
+    "key_confidence": 0.2429,
+    "reference_key_at_detected_pitch": "D major",
+    "reference_key_match_after_transposition": true,
+    "tuning_cents": 46.0,
+    "segment_count": 20,
+    "mean_chord_confidence": 0.4546,
+    "unique_chords_in_order": [
+      "D",
+      "A",
+      "Bm",
+      "G"
+    ],
+    "first_changes": [
+      "D",
+      "A",
+      "Bm",
+      "D",
+      "G",
+      "D",
+      "A",
+      "G",
+      "A",
+      "D",
+      "Bm",
+      "D",
+      "A",
+      "D",
+      "G",
+      "D",
+      "A",
+      "G",
+      "A",
+      "D"
+    ],
+    "top_chords_by_duration": [
+      {
+        "chord": "D",
+        "seconds": 28.81,
+        "share": 0.4778
+      },
+      {
+        "chord": "A",
+        "seconds": 17.45,
+        "share": 0.2894
+      },
+      {
+        "chord": "G",
+        "seconds": 10.57,
+        "share": 0.1752
+      },
+      {
+        "chord": "Bm",
+        "seconds": 3.47,
+        "share": 0.0576
+      }
+    ],
+    "literal_reference_chord_coverage": 0.25,
+    "best_reference_transposition_semitones": 2,
+    "transposition_aligned_reference_chords": [
+      "D",
+      "A",
+      "Bm",
+      "G"
+    ],
+    "transposition_aligned_chord_coverage": 1.0,
+    "missing_aligned_reference_chords": [],
+    "extra_detected_chords": [],
+    "warnings": [
+      "The recording appears about 46 cents sharp of A=440. Retune the instrument or adjust playback pitch for closer matching."
+    ],
+    "timeline_csv": "hotaru-no-hikari-timeline.csv"
+  },
+  {
+    "song": {
+      "slug": "amazing-grace",
+      "title": "Amazing Grace (instrumental arrangement)",
+      "file_url": "https://upload.wikimedia.org/wikipedia/commons/4/4f/Anonimo_-_Amazing_Grace.ogg",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Anonimo_-_Amazing_Grace.ogg",
+      "license_note": "Public-domain dedication by the creator.",
+      "arrangement_note": "Synthesized instrumental; no arrangement-level chord reference.",
+      "expected_key": null,
+      "expected_chords": []
+    },
+    "duration_seconds": 172.06,
+    "analysis_seconds": 9.16,
+    "tempo_bpm": 73.83,
+    "key": "G minor",
+    "key_confidence": 1.0,
+    "reference_key_at_detected_pitch": null,
+    "reference_key_match_after_transposition": null,
+    "tuning_cents": 1.0,
+    "segment_count": 47,
+    "mean_chord_confidence": 0.6144,
+    "unique_chords_in_order": [
+      "Eb",
+      "Ab",
+      "Bb",
+      "Cm",
+      "E",
+      "A",
+      "B",
+      "F",
+      "C",
+      "Dm",
+      "Gm"
+    ],
+    "first_changes": [
+      "Eb",
+      "Ab",
+      "Eb",
+      "Bb",
+      "Eb",
+      "Ab",
+      "Eb",
+      "Bb",
+      "Ab",
+      "Eb",
+      "Ab",
+      "Eb",
+      "Bb",
+      "Eb",
+      "Ab",
+      "Eb",
+      "Cm",
+      "Bb",
+      "Eb",
+      "E",
+      "A",
+      "E",
+      "B",
+      "E"
+    ],
+    "top_chords_by_duration": [
+      {
+        "chord": "Eb",
+        "seconds": 49.36,
+        "share": 0.2869
+      },
+      {
+        "chord": "E",
+        "seconds": 28.78,
+        "share": 0.1673
+      },
+      {
+        "chord": "F",
+        "seconds": 27.75,
+        "share": 0.1613
+      },
+      {
+        "chord": "Bb",
+        "seconds": 20.04,
+        "share": 0.1165
+      },
+      {
+        "chord": "Ab",
+        "seconds": 12.03,
+        "share": 0.0699
+      },
+      {
+        "chord": "C",
+        "seconds": 9.87,
+        "share": 0.0574
+      },
+      {
+        "chord": "B",
+        "seconds": 4.81,
+        "share": 0.0279
+      },
+      {
+        "chord": "Dm",
+        "seconds": 4.78,
+        "share": 0.0278
+      },
+      {
+        "chord": "A",
+        "seconds": 4.55,
+        "share": 0.0265
+      },
+      {
+        "chord": "Cm",
+        "seconds": 2.8,
+        "share": 0.0163
+      }
+    ],
+    "literal_reference_chord_coverage": null,
+    "best_reference_transposition_semitones": null,
+    "transposition_aligned_reference_chords": [],
+    "transposition_aligned_chord_coverage": null,
+    "missing_aligned_reference_chords": [],
+    "extra_detected_chords": [],
+    "warnings": [
+      "Only about 64% of detected chord duration fits one G minor harmony. The song may modulate, be modal, or use borrowed chords; treat the global key label cautiously."
+    ],
+    "timeline_csv": "amazing-grace-timeline.csv"
+  },
+  {
+    "song": {
+      "slug": "scarborough-fair",
+      "title": "Scarborough Fair",
+      "file_url": "https://upload.wikimedia.org/wikipedia/commons/a/a4/Scarborough_Fair.ogg",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Scarborough_Fair.ogg",
+      "license_note": "GFDL/CC BY-SA recording of a traditional song.",
+      "arrangement_note": "Modal folk-song stress test; major/minor labels may be incomplete.",
+      "expected_key": null,
+      "expected_chords": []
+    },
+    "duration_seconds": 167.5,
+    "analysis_seconds": 9.004,
+    "tempo_bpm": 117.45,
+    "key": "A major",
+    "key_confidence": 0.8305,
+    "reference_key_at_detected_pitch": null,
+    "reference_key_match_after_transposition": null,
+    "tuning_cents": -7.0,
+    "segment_count": 110,
+    "mean_chord_confidence": 0.3996,
+    "unique_chords_in_order": [
+      "D",
+      "A",
+      "E",
+      "Am",
+      "Em",
+      "Gm",
+      "G",
+      "Fm",
+      "C",
+      "Cm",
+      "F"
+    ],
+    "first_changes": [
+      "D",
+      "A",
+      "E",
+      "D",
+      "Am",
+      "D",
+      "Am",
+      "Em",
+      "A",
+      "D",
+      "Am",
+      "Em",
+      "D",
+      "Gm",
+      "E",
+      "D",
+      "D",
+      "A",
+      "E",
+      "D",
+      "Am",
+      "D",
+      "Am",
+      "Em"
+    ],
+    "top_chords_by_duration": [
+      {
+        "chord": "D",
+        "seconds": 67.38,
+        "share": 0.4023
+      },
+      {
+        "chord": "Am",
+        "seconds": 21.42,
+        "share": 0.1279
+      },
+      {
+        "chord": "E",
+        "seconds": 14.16,
+        "share": 0.0845
+      },
+      {
+        "chord": "A",
+        "seconds": 12.11,
+        "share": 0.0723
+      },
+      {
+        "chord": "Em",
+        "seconds": 9.98,
+        "share": 0.0596
+      },
+      {
+        "chord": "G",
+        "seconds": 5.86,
+        "share": 0.035
+      },
+      {
+        "chord": "C",
+        "seconds": 2.09,
+        "share": 0.0125
+      },
+      {
+        "chord": "Fm",
+        "seconds": 1.51,
+        "share": 0.009
+      },
+      {
+        "chord": "Gm",
+        "seconds": 1.49,
+        "share": 0.0089
+      },
+      {
+        "chord": "F",
+        "seconds": 1.39,
+        "share": 0.0083
+      }
+    ],
+    "literal_reference_chord_coverage": null,
+    "best_reference_transposition_semitones": null,
+    "transposition_aligned_reference_chords": [],
+    "transposition_aligned_chord_coverage": null,
+    "missing_aligned_reference_chords": [],
+    "extra_detected_chords": [],
+    "warnings": [
+      "Only about 68% of detected chord duration fits one A major harmony. The song may modulate, be modal, or use borrowed chords; treat the global key label cautiously."
+    ],
+    "timeline_csv": "scarborough-fair-timeline.csv"
+  }
+]

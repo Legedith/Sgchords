@@ -10,6 +10,7 @@ venv/
 dist/
 build/
 sgchords-output/
+benchmark-results/
 *.wav
 *.mp3
 *.m4a
