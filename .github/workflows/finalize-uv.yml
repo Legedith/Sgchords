@@ -1,0 +1,55 @@
+name: Finalize uv migration
+
+on:
+  push:
+    branches:
+      - agent/uv-song-benchmarks
+
+permissions:
+  contents: write
+
+concurrency:
+  group: finalize-uv-migration
+  cancel-in-progress: false
+
+jobs:
+  finalize:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install FFmpeg
+        run: sudo apt-get update && sudo apt-get install -y ffmpeg
+      - name: Install uv and Python
+        uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+        with:
+          version: "0.11.29"
+          python-version: "3.12"
+          enable-cache: true
+      - name: Apply final source and CI fixes
+        run: |
+          python scripts/apply_final_fixes.py
+          rm -f scripts/apply_final_fixes.py
+          rm -f .github/workflows/finalize-uv.yml
+          rm -f .github/workflows/commit-uv-lock.yml
+      - name: Validate locked project
+        run: |
+          uv sync --locked
+          uv run --frozen ruff check .
+          uv run --frozen pytest
+          uv build
+      - name: Run real-song benchmark
+        run: uv run --frozen python scripts/benchmark_public_domain.py --output benchmark-results
+      - name: Store checked benchmark results
+        run: |
+          mkdir -p benchmarks/timelines
+          cp benchmark-results/results.md benchmarks/results.md
+          cp benchmark-results/results.json benchmarks/results.json
+          cp benchmark-results/*-timeline.csv benchmarks/timelines/
+      - name: Commit validated changes
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Finalize uv workflow and song benchmarks"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
