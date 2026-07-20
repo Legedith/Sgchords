@@ -1,25 +1,30 @@
-# Public-domain song benchmark
+# Known-chord benchmark
 
-This benchmark is deliberately small and reproducible. It is not a leaderboard and it does not prove that the analyzer will work on every folk tradition.
+This benchmark runs the production analyzer on five openly licensed recordings whose chord content is published by the source.
 
-The audio is downloaded temporarily during the run and is never committed to this repository.
+| Recording | Published reference | Evaluation |
+|---|---|---|
+| C major I–IV–V–I | `C → F → G → C` | Literal-pitch sequence and vocabulary |
+| C major I–IV–V–I–I–V–I | `C → F → G → C → C → G → C` | Literal-pitch sequence and vocabulary |
+| I–V–vi–IV resolving to I | `C → G → Am → F → C` | Literal-pitch sequence and vocabulary; inversions reduced to roots |
+| La Bamba guitar clip | `C → F → G7` | Literal-pitch order and vocabulary |
+| Hotaru no Hikari / Auld Lang Syne | Published four-line progression | Sequence and vocabulary with one permitted global transposition, because guitar chord names can be capo-relative |
 
-| Recording | Arrangement | Rights | Reference used |
-|---|---|---|---|
-| Hotaru no Hikari (Auld Lang Syne in Japan) | Guitar and vocal | Public-domain dedication by the performer | The Wikimedia Commons description publishes `C → G → Am → F`, `C → G → F → G → C`, `C → G → C/G → F`, `C → G → F → G → C`. The benchmark compares the detected simple-chord vocabulary with `C`, `G`, `Am`, and `F`. It also reports the best single global transposition because published guitar labels can be capo-relative. Slash-bass recognition is not implemented. |
-| Amazing Grace, instrumental arrangement | Synthesized instrumental | Public-domain dedication by the creator | No arrangement-level chord annotation is published. Results are reported descriptively rather than scored as correct or incorrect. |
-| Scarborough Fair | Vocal/instrumental traditional performance | GFDL/CC BY-SA licensed recording of a traditional song | This is a modal stress test. A forced major/minor key label and triadic chord stream may be musically incomplete even when pitch detection is functioning. |
-
-Run it with:
+Run it with uv:
 
 ```bash
-uv run --frozen python scripts/benchmark_public_domain.py --output benchmark-results
+uv sync --locked
+uv run --frozen python scripts/benchmark_known_chords.py --output benchmark-results
 ```
 
-Generated files:
+The audio files are downloaded into a temporary directory and never committed. Generated output contains:
 
-- `results.md`: readable summary
-- `results.json`: full benchmark metadata
-- one `*-timeline.csv` file per recording
+- `results.md`: readable report
+- `results.json`: structured metrics and analyzer metadata
+- `timelines/*.csv`: every detected segment with confidence, local key, bar, and beat
 
-Interpret the output using duration-weighted chord confidence, the warnings, and the recording type. The Hotaru coverage score checks whether the expected chord vocabulary appears after one global pitch shift; it does not validate exact change times. A high score on one arrangement does not imply that every segment is correct, and low confidence on a modal or drone-based recording does not automatically mean the pitch analysis failed.
+## What the score means
+
+Adjacent duplicate labels are collapsed, then the detected sequence is compared with the reference using longest-common-subsequence matching. Sequence recall asks how much of the expected order appeared. Sequence precision penalizes excessive extra changes. Vocabulary recall ignores timing and asks whether the expected chord types appeared at all.
+
+This is deliberately stricter than reporting only chord-set coverage, but it still does not validate exact boundary timestamps because the source recordings do not publish frame-accurate annotations.

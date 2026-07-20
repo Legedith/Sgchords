@@ -11,6 +11,7 @@ dist/
 build/
 sgchords-output/
 benchmark-results/
+src/sgchords/ui.pyi
 *.wav
 *.mp3
 *.m4a

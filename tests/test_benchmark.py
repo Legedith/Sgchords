@@ -4,31 +4,51 @@ import importlib.util
 import sys
 from pathlib import Path
 
-SCRIPT_PATH = (
-    Path(__file__).resolve().parents[1]
-    / "scripts"
-    / "benchmark_public_domain.py"
-)
-SPEC = importlib.util.spec_from_file_location(
-    "sgchords_benchmark_script",
-    SCRIPT_PATH,
-)
+SCRIPT = Path(__file__).resolve().parents[1] / "scripts" / "benchmark_known_chords.py"
+SPEC = importlib.util.spec_from_file_location("sgchords_known_chord_benchmark", SCRIPT)
 assert SPEC is not None and SPEC.loader is not None
 MODULE = importlib.util.module_from_spec(SPEC)
 sys.modules[SPEC.name] = MODULE
 SPEC.loader.exec_module(MODULE)
 
-align_reference_chords = MODULE.align_reference_chords
+score_sequence = MODULE.score_sequence
 
 
-def test_reference_alignment_handles_capo_or_global_transposition() -> None:
-    result = align_reference_chords(
+def test_sequence_score_rewards_exact_progression() -> None:
+    result = score_sequence(
+        ["C", "F", "G", "C"],
+        ["C", "F", "G", "C"],
+        allow_global_transposition=False,
+    )
+    assert result["shift_semitones"] == 0
+    assert result["sequence_recall"] == 1.0
+    assert result["sequence_precision"] == 1.0
+    assert result["sequence_f1"] == 1.0
+    assert result["vocabulary_recall"] == 1.0
+
+
+def test_sequence_score_handles_capo_relative_reference() -> None:
+    result = score_sequence(
         ["C", "G", "Am", "F"],
         ["D", "A", "Bm", "G"],
+        allow_global_transposition=True,
     )
-    assert result["literal_coverage"] == 0.25
-    assert result["best_shift"] == 2
+    assert result["shift_semitones"] == 2
     assert result["aligned_expected"] == ["D", "A", "Bm", "G"]
-    assert result["aligned_coverage"] == 1.0
-    assert result["missing"] == []
-    assert result["extra"] == []
+    assert result["sequence_recall"] == 1.0
+    assert result["sequence_f1"] == 1.0
+    assert result["missing_vocabulary"] == []
+    assert result["extra_vocabulary"] == []
+
+
+
+def test_sequence_score_does_not_penalize_a_repeated_published_motif() -> None:
+    result = score_sequence(
+        ["C", "F", "G7"],
+        ["C", "F", "G7", "C", "F", "G7"],
+        allow_global_transposition=False,
+        allow_repetition=True,
+    )
+    assert result["sequence_recall"] == 1.0
+    assert result["sequence_precision"] == 1.0
+    assert result["sequence_f1"] == 1.0

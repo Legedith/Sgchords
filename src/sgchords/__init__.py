@@ -1,8 +1,17 @@
-"""SgChords: best-effort automatic chord transcription for play-along practice."""
+"""SgChords: synchronized, editable chord transcription for play-along practice."""
 
-from .analyzer import analyze_audio
-from .models import AnalysisResult, ChordSegment
+from .analyzer import AnalyzerConfig, analyze_audio
+from .models import AnalysisResult, BeatPoint, ChordSegment, KeyRegion, ProgressionPattern
 from .service import analyze_request
 
-__all__ = ["AnalysisResult", "ChordSegment", "analyze_audio", "analyze_request"]
+__all__ = [
+    "AnalysisResult",
+    "AnalyzerConfig",
+    "BeatPoint",
+    "ChordSegment",
+    "KeyRegion",
+    "ProgressionPattern",
+    "analyze_audio",
+    "analyze_request",
+]
 __version__ = "0.1.0"

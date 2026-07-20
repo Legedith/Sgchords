@@ -32,10 +32,12 @@ jobs:
         run: uv run --frozen ruff check .
       - name: Test
         run: uv run --frozen pytest
+      - name: Remove generated Gradio stub
+        run: rm -f src/sgchords/ui.pyi
       - name: Build
         run: uv build
 
-  public-domain-benchmark:
+  known-chord-benchmark:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -49,11 +51,14 @@ jobs:
           enable-cache: true
       - name: Sync locked environment
         run: uv sync --locked
-      - name: Analyze public-domain songs
-        run: uv run --frozen python scripts/benchmark_public_domain.py --output benchmark-results
+      - name: Analyze known-chord recordings
+        run: >-
+          uv run --frozen python scripts/benchmark_known_chords.py
+          --output benchmark-results
+          --minimum-exact-sequence-recall 0.90
       - name: Upload benchmark results
         uses: actions/upload-artifact@v4
         with:
-          name: public-domain-song-results
+          name: known-chord-benchmark-results
           path: benchmark-results
           if-no-files-found: error

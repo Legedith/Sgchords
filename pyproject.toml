@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "sgchords"
 version = "0.1.0"
-description = "Best-effort chord transcription from YouTube URLs and local recordings"
+description = "Synchronized, editable chord transcription from YouTube URLs and local recordings"
 readme = "README.md"
 license = "MIT"
 requires-python = ">=3.10"
@@ -30,11 +30,7 @@ dependencies = [
 ]
 
 [dependency-groups]
-dev = [
-  "pytest>=8,<10",
-  "pytest-cov>=5,<8",
-  "ruff>=0.9,<1",
-]
+dev = ["pytest>=8,<10", "pytest-cov>=5,<8", "ruff>=0.9,<1"]
 
 [project.scripts]
 sgchords = "sgchords.cli:main"
@@ -60,3 +56,4 @@ target-version = "py310"
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B", "SIM"]
+ignore = ["E501"]

@@ -19,9 +19,7 @@ DEFAULT_JOB_TTL_SECONDS = int(os.getenv("SGCHORDS_JOB_TTL_SECONDS", "86400"))
 
 def default_workspace_root() -> Path:
     configured = os.getenv("SGCHORDS_WORKSPACE")
-    if configured:
-        return Path(configured).expanduser()
-    return Path(tempfile.gettempdir()) / "sgchords"
+    return Path(configured).expanduser() if configured else Path(tempfile.gettempdir()) / "sgchords"
 
 
 def cleanup_old_jobs(root: str | Path, *, ttl_seconds: int = DEFAULT_JOB_TTL_SECONDS) -> None:
@@ -50,8 +48,9 @@ def analyze_request(
     *,
     youtube_url: str | None = None,
     upload_path: str | Path | None = None,
-    detail: str = "simple",
-    smoothing: float = 0.65,
+    detail: str = "standard",
+    smoothing: float = 0.50,
+    meter_override: int | None = None,
     workspace_root: str | Path | None = None,
     max_duration_seconds: int = DEFAULT_MAX_DURATION_SECONDS,
 ) -> tuple[AnalysisResult, Path]:
@@ -61,22 +60,18 @@ def analyze_request(
         raise InputError("Provide exactly one source: a YouTube URL or an uploaded file.")
     if url and not is_youtube_url(url):
         raise InputError("Only full YouTube URLs are accepted in the URL field.")
-
     job_dir = create_job_dir(workspace_root)
     try:
         prepared = (
             prepare_youtube_audio(url, job_dir, max_duration_seconds=max_duration_seconds)
             if url
-            else prepare_local_audio(
-                file_value,
-                job_dir,
-                max_duration_seconds=max_duration_seconds,
-            )
+            else prepare_local_audio(file_value, job_dir, max_duration_seconds=max_duration_seconds)
         )
         analyzed = analyze_audio(
             prepared.path,
             detail=detail,
             smoothing=smoothing,
+            meter_override=meter_override,
         )
         result = AnalysisResult(
             title=prepared.title,
@@ -84,10 +79,18 @@ def analyze_request(
             audio_path=str(prepared.path),
             duration=analyzed.duration,
             tempo_bpm=analyzed.tempo_bpm,
+            tempo_confidence=analyzed.tempo_confidence,
+            meter=analyzed.meter,
+            meter_confidence=analyzed.meter_confidence,
             key=analyzed.key,
             key_confidence=analyzed.key_confidence,
             tuning_cents=analyzed.tuning_cents,
             segments=analyzed.segments,
+            beats=analyzed.beats,
+            key_regions=analyzed.key_regions,
+            patterns=analyzed.patterns,
+            drone=analyzed.drone,
+            drone_confidence=analyzed.drone_confidence,
             warnings=analyzed.warnings,
             used_beat_tracking=analyzed.used_beat_tracking,
         )
@@ -103,6 +106,9 @@ def export_from_state(
     *,
     transpose: int = 0,
     instrument: str = "guitar",
+    capo: int = 0,
+    notation: str = "standard",
+    meter_override: int | None = None,
 ) -> tuple[AnalysisResult, list[str]]:
     if not state:
         raise InputError("Analyze a song before exporting.")
@@ -110,12 +116,14 @@ def export_from_state(
     segments = rows_to_segments(timeline)
     if not segments:
         raise InputError("The timeline is empty.")
-    output_dir = Path(result.audio_path).parent / "exports"
     files = write_exports(
         result,
-        output_dir,
+        Path(result.audio_path).parent / "exports",
         segments=segments,
         transpose=int(transpose),
         instrument=instrument,
+        capo=int(capo),
+        notation=notation,
+        meter_override=meter_override,
     )
     return result, files
