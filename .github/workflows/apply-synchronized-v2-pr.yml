@@ -69,21 +69,32 @@ jobs:
         run: uv sync --locked
 
       - name: Lint
-        run: uv run --frozen ruff check .
+        shell: bash
+        run: |
+          set -o pipefail
+          uv run --frozen ruff check . 2>&1 | tee /tmp/ruff.log
 
       - name: Run automated tests
-        run: uv run --frozen pytest
+        shell: bash
+        run: |
+          set -o pipefail
+          uv run --frozen pytest -vv 2>&1 | tee /tmp/pytest.log
 
       - name: Remove the Gradio-generated typing stub
         run: rm -f src/sgchords/ui.pyi
 
       - name: Build wheel and source distribution
-        run: uv build
+        shell: bash
+        run: |
+          set -o pipefail
+          uv build 2>&1 | tee /tmp/build.log
 
       - name: Analyze five known-chord recordings
-        run: >-
-          uv run --frozen python scripts/benchmark_known_chords.py
-          --output /tmp/benchmark-results
+        shell: bash
+        run: |
+          set -o pipefail
+          uv run --frozen python scripts/benchmark_known_chords.py \
+            --output /tmp/benchmark-results 2>&1 | tee /tmp/benchmark.log
 
       - name: Store checked benchmark results
         shell: bash
@@ -101,6 +112,10 @@ jobs:
           name: synchronized-play-along-validation
           path: |
             /tmp/reconstruction-check.txt
+            /tmp/ruff.log
+            /tmp/pytest.log
+            /tmp/build.log
+            /tmp/benchmark.log
             /tmp/benchmark-results
           if-no-files-found: warn
 
