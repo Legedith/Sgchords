@@ -91,6 +91,8 @@ jobs:
 
       - name: Analyze five known-chord recordings
         shell: bash
+        env:
+          SGCHORDS_BENCHMARK_KEEP_AUDIO: "1"
         run: |
           set -o pipefail
           uv run --frozen python scripts/benchmark_known_chords.py \
@@ -117,6 +119,11 @@ jobs:
             /tmp/build.log
             /tmp/benchmark.log
             /tmp/benchmark-results
+            src
+            scripts
+            tests
+            pyproject.toml
+            uv.lock
           if-no-files-found: warn
 
       - name: Commit the validated upgrade and measured results
@@ -125,6 +132,7 @@ jobs:
           set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A
+          git add .dockerignore .gitignore .python-version Dockerfile README.md app.py pyproject.toml
+          git add src tests scripts/benchmark_known_chords.py benchmarks
           git commit -m "Build synchronized play-along experience"
           git push origin "HEAD:${{ github.head_ref }}"
