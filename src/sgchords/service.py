@@ -49,7 +49,7 @@ def analyze_request(
     youtube_url: str | None = None,
     upload_path: str | Path | None = None,
     detail: str = "standard",
-    smoothing: float = 0.68,
+    smoothing: float = 0.50,
     meter_override: int | None = None,
     workspace_root: str | Path | None = None,
     max_duration_seconds: int = DEFAULT_MAX_DURATION_SECONDS,

@@ -336,7 +336,7 @@ def build_demo() -> gr.Blocks:
                 smoothing = gr.Slider(
                     0,
                     1,
-                    value=0.68,
+                    value=0.50,
                     step=0.05,
                     label="Sequence smoothing",
                     info="Higher removes flicker; lower preserves fast changes.",

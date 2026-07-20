@@ -303,6 +303,28 @@ def _entropy(vector: np.ndarray) -> float:
     return float(-np.sum(nonzero * np.log(nonzero)) / np.log(12.0)) if nonzero.size else 1.0
 
 
+def suppress_persistent_chroma_floor(
+    vectors: np.ndarray,
+    energies: np.ndarray,
+    *,
+    percentile: float = 10.0,
+    strength: float = 0.70,
+) -> tuple[np.ndarray, np.ndarray]:
+    matrix = np.maximum(np.asarray(vectors, dtype=float), 0.0)
+    if matrix.ndim != 2 or matrix.shape[0] < 4:
+        return matrix, np.zeros(12, dtype=float)
+    energy = np.asarray(energies, dtype=float)
+    active = energy >= max(float(np.median(energy)) * 0.16, 1e-8)
+    if np.count_nonzero(active) < 4:
+        active = np.ones(matrix.shape[0], dtype=bool)
+    totals = np.sum(matrix, axis=1, keepdims=True)
+    mass = matrix / np.maximum(totals, 1e-12)
+    floor = np.percentile(mass[active], percentile, axis=0)
+    corrected = np.maximum(mass - strength * floor[None, :], 0.0)
+    corrected /= np.maximum(np.sum(corrected, axis=1, keepdims=True), 1e-12)
+    return corrected * totals, floor
+
+
 def detect_drone(vectors: np.ndarray, energies: np.ndarray) -> tuple[int | None, float, np.ndarray]:
     matrix = np.maximum(np.asarray(vectors, dtype=float), 0.0)
     if matrix.ndim != 2 or matrix.shape[0] < 6:
@@ -547,7 +569,7 @@ def classify_chroma_segments(
     *,
     bass_vectors: np.ndarray | None = None,
     detail: str = "standard",
-    smoothing: float = 0.68,
+    smoothing: float = 0.50,
     local_keys: Sequence[tuple[int, str, float, str]] | None = None,
 ) -> tuple[list[str], list[float], list[float], np.ndarray]:
     matrix = np.asarray(vectors, dtype=float)
@@ -584,7 +606,7 @@ def classify_chroma_segments(
             )
             if local:
                 root, mode, confidence, _label = local
-                score += (0.07 if is_diatonic(spec, root, mode) else -0.018) * confidence
+                score += (0.10 if is_diatonic(spec, root, mode) else -0.16) * confidence
             emissions[index, state] = score
     transition = _chord_transition_matrix(specs) * (0.22 + 0.78 * float(np.clip(smoothing, 0, 1)))
     dp = np.full_like(emissions, -np.inf)
@@ -758,7 +780,7 @@ def analyze_audio(
     audio_path: str | Path,
     *,
     detail: str = "standard",
-    smoothing: float = 0.68,
+    smoothing: float = 0.50,
     meter_override: int | None = None,
     config: AnalyzerConfig | None = None,
 ) -> AnalyzerOutput:
@@ -871,7 +893,8 @@ def analyze_audio(
     vectors, bass_vectors, energies = _aggregate_features(
         chroma, bass_chroma, rms, boundaries, sample_rate=sample_rate, hop_length=config.hop_length
     )
-    drone_root, drone_confidence, corrected = detect_drone(vectors, energies)
+    drone_root, drone_confidence, drone_corrected = detect_drone(vectors, energies)
+    corrected, _persistent_floor = suppress_persistent_chroma_floor(drone_corrected, energies)
     local_keys, key_regions, dominant_key, key_confidence = estimate_local_keys(
         corrected,
         energies,

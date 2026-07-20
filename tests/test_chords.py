@@ -138,3 +138,23 @@ def test_clean_triad_is_not_promoted_to_major_seventh() -> None:
         local_keys=[(0, "major", 1.0, "C major")],
     )
     assert labels == ["C"]
+
+
+
+def test_persistent_chroma_floor_reduces_recording_wide_artifact() -> None:
+    from sgchords.analyzer import suppress_persistent_chroma_floor
+
+    vectors = np.asarray(
+        [
+            chord_vector(0, (0, 4, 7)),
+            chord_vector(5, (0, 4, 7)),
+            chord_vector(7, (0, 4, 7)),
+            chord_vector(0, (0, 4, 7)),
+        ]
+        * 3
+    )
+    vectors[:, 8] += 0.45
+    corrected, floor = suppress_persistent_chroma_floor(vectors, np.ones(len(vectors)))
+    assert floor[8] > 0.05
+    assert np.median(corrected[:, 8]) < np.median(vectors[:, 8])
+    assert np.argmax(corrected[0]) == 0

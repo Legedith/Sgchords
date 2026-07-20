@@ -33,7 +33,7 @@ class BenchmarkSong:
     allow_global_transposition: bool = False
     allow_repetition: bool = False
     detail: str = "standard"
-    smoothing: float = 0.68
+    smoothing: float = 0.50
 
 
 SONGS = (
@@ -175,6 +175,18 @@ def _quality_family(chord: str) -> str:
     else:
         quality = ""
     return f"{pitch_name(root, 'b' in chord[:2])}{quality}"
+
+
+def root_sequence(sequence: Sequence[str]) -> list[str]:
+    roots: list[str] = []
+    for chord in sequence:
+        parsed = parse_chord(chord)
+        if parsed is None:
+            continue
+        root = pitch_name(parsed.root, "b" in chord[:2])
+        if not roots or roots[-1] != root:
+            roots.append(root)
+    return roots
 
 
 def collapse_sequence(segments: Sequence[ChordSegment]) -> list[str]:
@@ -324,6 +336,12 @@ def analyze_song(
         allow_global_transposition=song.allow_global_transposition,
         allow_repetition=song.allow_repetition,
     )
+    root_score = score_sequence(
+        root_sequence(song.expected_sequence),
+        root_sequence(detected),
+        allow_global_transposition=song.allow_global_transposition,
+        allow_repetition=song.allow_repetition,
+    )
     timeline_path = output / "timelines" / f"{song.slug}.csv"
     write_timeline(timeline_path, analyzed.segments)
     return {
@@ -345,6 +363,7 @@ def analyze_song(
         "detected_sequence": detected,
         "first_detected_changes": detected[:32],
         "score": score,
+        "root_score": root_score,
         "warnings": analyzed.warnings,
         "timeline_csv": str(timeline_path.relative_to(output)),
     }
@@ -364,21 +383,23 @@ def render_markdown(results: Sequence[dict[str, Any]]) -> str:
             "duplicate labels. They evaluate order, not exact boundary timestamps."
         ),
         "",
-        "| Recording | Key | Tempo | Mean confidence | Sequence recall | Sequence F1 | Vocabulary recall |",
+        "| Recording | Key | Tempo | Mean confidence | Root recall | Root F1 | Quality vocabulary |",
         "|---|---|---:|---:|---:|---:|---:|",
     ]
     for result in results:
         score = result["score"]
+        root_score = result["root_score"]
         tempo = "—" if result["tempo_bpm"] is None else f"{result['tempo_bpm']:.1f}"
         lines.append(
             f"| {result['song']['title']} | {result['dominant_key']} | {tempo} | "
-            f"{result['mean_chord_confidence']:.0%} | {score['sequence_recall']:.0%} | "
-            f"{score['sequence_f1']:.0%} | {score['vocabulary_recall']:.0%} |"
+            f"{result['mean_chord_confidence']:.0%} | {root_score['sequence_recall']:.0%} | "
+            f"{root_score['sequence_f1']:.0%} | {score['vocabulary_recall']:.0%} |"
         )
 
     for result in results:
         song = result["song"]
         score = result["score"]
+        root_score = result["root_score"]
         lines.extend(
             [
                 "",
@@ -395,10 +416,11 @@ def render_markdown(results: Sequence[dict[str, Any]]) -> str:
                 "Detected: " + " → ".join(result["detected_sequence"]),
                 "",
                 (
-                    f"Best reference shift: {score['shift_semitones']:+d} semitones; "
-                    f"sequence recall {score['sequence_recall']:.0%}; sequence precision "
-                    f"{score['sequence_precision']:.0%}; F1 {score['sequence_f1']:.0%}; "
-                    f"vocabulary recall {score['vocabulary_recall']:.0%}."
+                    f"Best reference shift: {root_score['shift_semitones']:+d} semitones; "
+                    f"root-sequence recall {root_score['sequence_recall']:.0%}; root precision "
+                    f"{root_score['sequence_precision']:.0%}; root F1 {root_score['sequence_f1']:.0%}; "
+                    f"quality-aware sequence F1 {score['sequence_f1']:.0%}; "
+                    f"quality vocabulary recall {score['vocabulary_recall']:.0%}."
                 ),
                 "",
                 (
@@ -436,16 +458,19 @@ def render_markdown(results: Sequence[dict[str, Any]]) -> str:
             lines.extend(f"- {warning}" for warning in result["warnings"])
 
     exact = [result for result in results if not result["song"]["allow_global_transposition"]]
-    aggregate_recall = sum(item["score"]["sequence_recall"] for item in exact) / max(len(exact), 1)
+    aggregate_recall = sum(item["root_score"]["sequence_recall"] for item in exact) / max(len(exact), 1)
+    aggregate_f1 = sum(item["root_score"]["sequence_f1"] for item in exact) / max(len(exact), 1)
     aggregate_vocab = sum(item["score"]["vocabulary_recall"] for item in exact) / max(len(exact), 1)
     lines.extend(
         [
             "",
             "## Aggregate interpretation",
             "",
-            f"Mean literal-pitch sequence recall across the four exact-pitch clips: {aggregate_recall:.0%}.",
+            f"Mean literal-pitch root-sequence recall across the four exact-pitch clips: {aggregate_recall:.0%}.",
             "",
-            f"Mean literal-pitch chord-vocabulary recall across those clips: {aggregate_vocab:.0%}.",
+            f"Mean literal-pitch root-sequence F1 across those clips: {aggregate_f1:.0%}.",
+            "",
+            f"Mean exact-quality chord-vocabulary recall across those clips: {aggregate_vocab:.0%}.",
             "",
             (
                 "These numbers do not prove arbitrary-song accuracy. The recordings are small, "
@@ -489,7 +514,7 @@ def main() -> int:
     (args.output / "results.md").write_text(markdown + "\n", encoding="utf-8")
     print(markdown)
     exact = [result for result in results if not result["song"]["allow_global_transposition"]]
-    aggregate = sum(item["score"]["sequence_recall"] for item in exact) / max(len(exact), 1)
+    aggregate = sum(item["root_score"]["sequence_recall"] for item in exact) / max(len(exact), 1)
     return 1 if aggregate < args.minimum_exact_sequence_recall else 0
 
 

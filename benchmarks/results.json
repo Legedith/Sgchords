@@ -16,22 +16,22 @@
       "allow_global_transposition": false,
       "allow_repetition": false,
       "detail": "standard",
-      "smoothing": 0.68
+      "smoothing": 0.5
     },
     "duration_seconds": 4.898,
-    "analysis_seconds": 12.817,
+    "analysis_seconds": 9.79,
     "tempo_bpm": 60.09,
     "tempo_confidence": 0.7685,
     "meter": 4,
     "meter_confidence": 0.0,
     "dominant_key": "C major",
-    "key_confidence": 0.7111,
+    "key_confidence": 0.6847,
     "local_key_regions": [
       {
         "start": 0.0,
         "end": 4.898049886621315,
         "key": "C major",
-        "confidence": 0.7110756457062138,
+        "confidence": 0.6846916809731675,
         "root": 0,
         "mode": "major"
       }
@@ -40,18 +40,20 @@
     "drone": null,
     "drone_confidence": 0.0,
     "segment_count": 5,
-    "mean_chord_confidence": 0.5388,
+    "mean_chord_confidence": 0.6239,
     "detected_sequence": [
       "C",
       "F",
       "G",
-      "C"
+      "C",
+      "Em"
     ],
     "first_detected_changes": [
       "C",
       "F",
       "G",
-      "C"
+      "C",
+      "Em"
     ],
     "score": {
       "shift_semitones": 0,
@@ -63,12 +65,33 @@
       ],
       "lcs_matches": 4,
       "sequence_recall": 1.0,
-      "sequence_precision": 1.0,
-      "sequence_f1": 1.0,
+      "sequence_precision": 0.8,
+      "sequence_f1": 0.8889,
       "vocabulary_recall": 1.0,
-      "vocabulary_precision": 1.0,
+      "vocabulary_precision": 0.75,
       "missing_vocabulary": [],
-      "extra_vocabulary": []
+      "extra_vocabulary": [
+        "Em"
+      ]
+    },
+    "root_score": {
+      "shift_semitones": 0,
+      "aligned_expected": [
+        "C",
+        "F",
+        "G",
+        "C"
+      ],
+      "lcs_matches": 4,
+      "sequence_recall": 1.0,
+      "sequence_precision": 0.8,
+      "sequence_f1": 0.8889,
+      "vocabulary_recall": 1.0,
+      "vocabulary_precision": 0.75,
+      "missing_vocabulary": [],
+      "extra_vocabulary": [
+        "E"
+      ]
     },
     "warnings": [
       "The bar-line estimate is uncertain. Set beats per bar manually if the chart groups beats incorrectly."
@@ -95,22 +118,22 @@
       "allow_global_transposition": false,
       "allow_repetition": false,
       "detail": "standard",
-      "smoothing": 0.68
+      "smoothing": 0.5
     },
     "duration_seconds": 8.128,
-    "analysis_seconds": 0.682,
+    "analysis_seconds": 0.536,
     "tempo_bpm": 60.09,
     "tempo_confidence": 0.744,
     "meter": 4,
     "meter_confidence": 1.0,
     "dominant_key": "C major",
-    "key_confidence": 0.3337,
+    "key_confidence": 0.9029,
     "local_key_regions": [
       {
         "start": 0.0,
         "end": 8.127755102040817,
         "key": "C major",
-        "confidence": 0.3337135669849537,
+        "confidence": 0.9029260335718245,
         "root": 0,
         "mode": "major"
       }
@@ -119,7 +142,7 @@
     "drone": null,
     "drone_confidence": 0.248,
     "segment_count": 7,
-    "mean_chord_confidence": 0.5494,
+    "mean_chord_confidence": 0.5912,
     "detected_sequence": [
       "C",
       "F",
@@ -137,6 +160,25 @@
       "C"
     ],
     "score": {
+      "shift_semitones": 0,
+      "aligned_expected": [
+        "C",
+        "F",
+        "G",
+        "C",
+        "G",
+        "C"
+      ],
+      "lcs_matches": 6,
+      "sequence_recall": 1.0,
+      "sequence_precision": 1.0,
+      "sequence_f1": 1.0,
+      "vocabulary_recall": 1.0,
+      "vocabulary_precision": 1.0,
+      "missing_vocabulary": [],
+      "extra_vocabulary": []
+    },
+    "root_score": {
       "shift_semitones": 0,
       "aligned_expected": [
         "C",
@@ -176,22 +218,22 @@
       "allow_global_transposition": false,
       "allow_repetition": true,
       "detail": "standard",
-      "smoothing": 0.68
+      "smoothing": 0.5
     },
     "duration_seconds": 18.0,
-    "analysis_seconds": 1.267,
+    "analysis_seconds": 1.006,
     "tempo_bpm": 37.45,
     "tempo_confidence": 0.8696,
     "meter": 4,
     "meter_confidence": 1.0,
     "dominant_key": "C major",
-    "key_confidence": 0.6371,
+    "key_confidence": 0.4643,
     "local_key_regions": [
       {
         "start": 0.0,
         "end": 18.000453514739228,
         "key": "C major",
-        "confidence": 0.637087859531066,
+        "confidence": 0.46434931016032094,
         "root": 0,
         "mode": "major"
       }
@@ -200,19 +242,27 @@
     "drone": null,
     "drone_confidence": 0.44,
     "segment_count": 10,
-    "mean_chord_confidence": 0.499,
+    "mean_chord_confidence": 0.5567,
     "detected_sequence": [
       "C",
       "G",
+      "Am",
+      "F",
       "C",
       "G",
+      "Am",
+      "F",
       "C"
     ],
     "first_detected_changes": [
       "C",
       "G",
+      "Am",
+      "F",
       "C",
       "G",
+      "Am",
+      "F",
       "C"
     ],
     "score": {
@@ -228,16 +278,35 @@
         "F",
         "C"
       ],
-      "lcs_matches": 5,
-      "sequence_recall": 0.5556,
+      "lcs_matches": 9,
+      "sequence_recall": 1.0,
       "sequence_precision": 1.0,
-      "sequence_f1": 0.7143,
-      "vocabulary_recall": 0.5,
+      "sequence_f1": 1.0,
+      "vocabulary_recall": 1.0,
       "vocabulary_precision": 1.0,
-      "missing_vocabulary": [
-        "Am",
-        "F"
+      "missing_vocabulary": [],
+      "extra_vocabulary": []
+    },
+    "root_score": {
+      "shift_semitones": 0,
+      "aligned_expected": [
+        "C",
+        "G",
+        "A",
+        "F",
+        "C",
+        "G",
+        "A",
+        "F",
+        "C"
       ],
+      "lcs_matches": 9,
+      "sequence_recall": 1.0,
+      "sequence_precision": 1.0,
+      "sequence_f1": 1.0,
+      "vocabulary_recall": 1.0,
+      "vocabulary_precision": 1.0,
+      "missing_vocabulary": [],
       "extra_vocabulary": []
     },
     "warnings": [],
@@ -259,70 +328,110 @@
       "allow_global_transposition": false,
       "allow_repetition": true,
       "detail": "standard",
-      "smoothing": 0.68
+      "smoothing": 0.5
     },
     "duration_seconds": 10.693,
-    "analysis_seconds": 0.925,
+    "analysis_seconds": 0.713,
     "tempo_bpm": 172.27,
     "tempo_confidence": 0.7702,
     "meter": 4,
     "meter_confidence": 0.8863,
-    "dominant_key": "G phrygian",
-    "key_confidence": 0.1437,
+    "dominant_key": "C major",
+    "key_confidence": 0.5149,
     "local_key_regions": [
       {
         "start": 0.0,
         "end": 10.692789115646258,
-        "key": "G phrygian",
-        "confidence": 0.14370480570406463,
-        "root": 7,
-        "mode": "phrygian"
+        "key": "C major",
+        "confidence": 0.5149172953175901,
+        "root": 0,
+        "mode": "major"
       }
     ],
     "tuning_cents": -9.0,
     "drone": null,
     "drone_confidence": 0.2735,
     "segment_count": 15,
-    "mean_chord_confidence": 0.4354,
+    "mean_chord_confidence": 0.449,
     "detected_sequence": [
       "C",
-      "Fm",
-      "Ab",
-      "Fm",
-      "Ab"
+      "F",
+      "G",
+      "C",
+      "F",
+      "G",
+      "Am",
+      "F",
+      "G",
+      "C"
     ],
     "first_detected_changes": [
       "C",
-      "Fm",
-      "Ab",
-      "Fm",
-      "Ab"
+      "F",
+      "G",
+      "C",
+      "F",
+      "G",
+      "Am",
+      "F",
+      "G",
+      "C"
     ],
     "score": {
       "shift_semitones": 0,
       "aligned_expected": [
         "C",
         "F",
-        "G7"
-      ],
-      "lcs_matches": 1,
-      "sequence_recall": 0.3333,
-      "sequence_precision": 0.2,
-      "sequence_f1": 0.25,
-      "vocabulary_recall": 0.3333,
-      "vocabulary_precision": 0.3333,
-      "missing_vocabulary": [
+        "G7",
+        "C",
+        "F",
+        "G7",
+        "C",
+        "F",
+        "G7",
+        "C",
         "F",
         "G7"
       ],
+      "lcs_matches": 6,
+      "sequence_recall": 0.5,
+      "sequence_precision": 0.6,
+      "sequence_f1": 0.5455,
+      "vocabulary_recall": 0.6667,
+      "vocabulary_precision": 0.5,
+      "missing_vocabulary": [
+        "G7"
+      ],
       "extra_vocabulary": [
-        "Ab",
-        "Fm"
+        "Am",
+        "G"
       ]
     },
-    "warnings": [
-      "Only about 7% of chord duration fits the dominant G phrygian region; the song may be modal, modulating, or use borrowed harmony."
-    ],
+    "root_score": {
+      "shift_semitones": 0,
+      "aligned_expected": [
+        "C",
+        "F",
+        "G",
+        "C",
+        "F",
+        "G",
+        "C",
+        "F",
+        "G"
+      ],
+      "lcs_matches": 8,
+      "sequence_recall": 0.8889,
+      "sequence_precision": 0.8,
+      "sequence_f1": 0.8421,
+      "vocabulary_recall": 1.0,
+      "vocabulary_precision": 0.75,
+      "missing_vocabulary": [],
+      "extra_vocabulary": [
+        "A"
+      ]
+    },
+    "warnings": [],
     "timeline_csv": "timelines/la-bamba-c-f-g7.csv"
   },
   {
@@ -356,30 +465,30 @@
       "allow_global_transposition": true,
       "allow_repetition": false,
       "detail": "standard",
-      "smoothing": 0.68
+      "smoothing": 0.5
     },
     "duration_seconds": 60.3,
-    "analysis_seconds": 4.21,
+    "analysis_seconds": 3.322,
     "tempo_bpm": 143.55,
     "tempo_confidence": 0.6504,
     "meter": 4,
     "meter_confidence": 0.2126,
     "dominant_key": "A major",
-    "key_confidence": 0.1777,
+    "key_confidence": 0.1746,
     "local_key_regions": [
       {
         "start": 0.0,
-        "end": 26.05278911564626,
+        "end": 26.51718820861678,
         "key": "D major",
-        "confidence": 0.34229663592840887,
+        "confidence": 0.3763488061135078,
         "root": 2,
         "mode": "major"
       },
       {
-        "start": 26.05278911564626,
+        "start": 26.51718820861678,
         "end": 60.3,
         "key": "A major",
-        "confidence": 0.31295927203582935,
+        "confidence": 0.3116135913242721,
         "root": 9,
         "mode": "major"
       }
@@ -387,8 +496,8 @@
     "tuning_cents": 46.0,
     "drone": null,
     "drone_confidence": 0.0,
-    "segment_count": 55,
-    "mean_chord_confidence": 0.4935,
+    "segment_count": 58,
+    "mean_chord_confidence": 0.5185,
     "detected_sequence": [
       "Bm",
       "D",
@@ -411,6 +520,7 @@
       "A",
       "E",
       "A",
+      "F#m",
       "D",
       "A",
       "G",
@@ -420,6 +530,7 @@
       "F#m",
       "G",
       "A",
+      "E",
       "D"
     ],
     "first_detected_changes": [
@@ -444,6 +555,7 @@
       "A",
       "E",
       "A",
+      "F#m",
       "D",
       "A",
       "G",
@@ -453,7 +565,7 @@
       "F#m",
       "G",
       "A",
-      "D"
+      "E"
     ],
     "score": {
       "shift_semitones": 2,
@@ -478,14 +590,47 @@
       ],
       "lcs_matches": 17,
       "sequence_recall": 1.0,
-      "sequence_precision": 0.5484,
-      "sequence_f1": 0.7083,
+      "sequence_precision": 0.5152,
+      "sequence_f1": 0.68,
       "vocabulary_recall": 1.0,
       "vocabulary_precision": 0.6667,
       "missing_vocabulary": [],
       "extra_vocabulary": [
         "E",
         "F#m"
+      ]
+    },
+    "root_score": {
+      "shift_semitones": 2,
+      "aligned_expected": [
+        "D",
+        "A",
+        "B",
+        "G",
+        "D",
+        "A",
+        "G",
+        "A",
+        "D",
+        "A",
+        "D",
+        "G",
+        "D",
+        "A",
+        "G",
+        "A",
+        "D"
+      ],
+      "lcs_matches": 17,
+      "sequence_recall": 1.0,
+      "sequence_precision": 0.5152,
+      "sequence_f1": 0.68,
+      "vocabulary_recall": 1.0,
+      "vocabulary_precision": 0.6667,
+      "missing_vocabulary": [],
+      "extra_vocabulary": [
+        "E",
+        "F#"
       ]
     },
     "warnings": [

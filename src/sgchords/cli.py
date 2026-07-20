@@ -18,7 +18,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("source", help="YouTube URL or local audio/video path")
     parser.add_argument("-o", "--output-dir", type=Path, default=Path("sgchords-output"))
     parser.add_argument("--detail", choices=("simple", "standard", "detailed"), default="standard")
-    parser.add_argument("--smoothing", type=float, default=0.68)
+    parser.add_argument("--smoothing", type=float, default=0.50)
     parser.add_argument("--meter", choices=("auto", "3", "4", "6"), default="auto")
     parser.add_argument(
         "--transpose", type=int, choices=range(-11, 12), default=0, metavar="[-11..11]"
