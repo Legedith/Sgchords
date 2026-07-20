@@ -91,12 +91,21 @@ jobs:
 
       - name: Analyze five known-chord recordings
         shell: bash
-        env:
-          SGCHORDS_BENCHMARK_KEEP_AUDIO: "1"
         run: |
           set -o pipefail
           uv run --frozen python scripts/benchmark_known_chords.py \
             --output /tmp/benchmark-results 2>&1 | tee /tmp/benchmark.log
+
+      - name: Download private audio evidence
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/benchmark-audio
+          curl -L --fail --retry 3 -o /tmp/benchmark-audio/i-v-vi-iv-in-c.oga \
+            'https://upload.wikimedia.org/wikipedia/commons/f/f7/I-V-vi-IV_chord_progression_in_C.oga'
+          curl -L --fail --retry 3 -o /tmp/benchmark-audio/la-bamba-c-f-g7.ogg \
+            'https://upload.wikimedia.org/wikipedia/commons/6/63/La_bamba_chords_cfg7.ogg'
 
       - name: Store checked benchmark results
         shell: bash
@@ -119,6 +128,7 @@ jobs:
             /tmp/build.log
             /tmp/benchmark.log
             /tmp/benchmark-results
+            /tmp/benchmark-audio
             src
             scripts
             tests
