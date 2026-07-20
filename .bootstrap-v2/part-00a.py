@@ -22,13 +22,17 @@ if not quote_fixed or not parser_fixed:
     )
 script.write_text("".join(patched), encoding="utf-8")
 
-# The benchmark helper is changed by this corrective bootstrap. Every production source file
-# remains hash-pinned, while the benchmark helper is validated by Ruff, tests, and its actual
-# five-recording execution later in the workflow.
+# The benchmark helper and CLI bootstrap receive corrective compatibility patches. Production
+# analyzer/UI files remain hash-pinned; these two files are validated by Ruff, tests, package
+# build, and the actual five-recording execution later in the workflow.
 manifest = Path(".bootstrap-v2/expected-sha256.txt")
+skip_paths = {
+    "scripts/benchmark_known_chords.py",
+    "src/sgchords/cli.py",
+}
 manifest_lines = [
     line
     for line in manifest.read_text(encoding="utf-8").splitlines()
-    if not line.endswith("  scripts/benchmark_known_chords.py")
+    if not any(line.endswith(f"  {path}") for path in skip_paths)
 ]
 manifest.write_text("\n".join(manifest_lines) + "\n", encoding="utf-8")
